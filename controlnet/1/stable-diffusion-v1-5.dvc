@@ -1,0 +1,5 @@
+outs:
+- md5: 2b9df46d99580b90ea33e4cfd0078319.dir
+  size: 47259939650
+  nfiles: 36
+  path: stable-diffusion-v1-5
