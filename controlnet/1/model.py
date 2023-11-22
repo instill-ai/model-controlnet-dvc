@@ -182,9 +182,8 @@ class TritonPythonModel:
                        torch.cuda.manual_seed_all(random_seed)
 
 
-                original_image = Image.open(io.BytesIO(base64.b64decode(prompt_image)))
-                # original_image = Image.open(io.BytesIO(prompt_image.astype(bytes)))  # for test script
-                # original_image = Image.open(io.BytesIO(prompt_image))  # for instill vd3p
+                # original_image = Image.open(io.BytesIO(base64.b64decode(prompt_image)))  # for test script
+                original_image = Image.open(io.BytesIO(prompt_image))  # for instill vd3p
 
                 processed_image = np.array(original_image)
 
