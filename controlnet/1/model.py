@@ -57,8 +57,8 @@ class TritonPythonModel:
         self.logger.log_info(f'[DEBUG] diffusers version: {diffusers.__version__}')
         self.logger.log_info(f'[DEBUG] torch version: {torch.__version__}')
         
-        controlnet_canny_path = str(Path(__file__).parent.absolute().joinpath('sd-controlnet-canny/'))
-        stable_diffution_path = str(Path(__file__).parent.absolute().joinpath('stable-diffusion-v1-5/'))
+        controlnet_canny_path = str(Path(__file__).parent.absolute().joinpath('sd-controlnet-canny'))
+        stable_diffution_path = str(Path(__file__).parent.absolute().joinpath('stable-diffusion-v1-5'))
         
         self.logger.log_info(f'[DEBUG] load model under path: {controlnet_canny_path}')
         self.logger.log_info(f'[DEBUG] load model under path: {stable_diffution_path}')
