@@ -56,10 +56,10 @@ class TritonPythonModel:
         # Load the model
         self.logger.log_info(f'[DEBUG] diffusers version: {diffusers.__version__}')
         self.logger.log_info(f'[DEBUG] torch version: {torch.__version__}')
-        
+
         controlnet_canny_path = str(Path(__file__).parent.absolute().joinpath('sd-controlnet-canny'))
         stable_diffution_path = str(Path(__file__).parent.absolute().joinpath('stable-diffusion-v1-5'))
-        
+
         self.logger.log_info(f'[DEBUG] load model under path: {controlnet_canny_path}')
         self.logger.log_info(f'[DEBUG] load model under path: {stable_diffution_path}')
 
@@ -195,8 +195,6 @@ class TritonPythonModel:
                 processed_image = np.concatenate([processed_image, processed_image, processed_image], axis=2)
                 canny_image = Image.fromarray(processed_image)
 
-                
-
                 # # # Define how many steps and what % of steps to be run on each experts (80/20) here
                 # # n_steps = 40
                 # # high_noise_frac = 0.8
@@ -207,9 +205,9 @@ class TritonPythonModel:
                 high_noise_frac = 0.8
                 # run both experts
                 outpu_image = self.pipe(
-                    "the mona lisa", 
+                    prompt,
                     image=canny_image,
-                    num_inference_steps=20
+                    num_inference_steps=num_inference_steps
                 ).images[0]
 
 
