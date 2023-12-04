@@ -1,5 +1,6 @@
 outs:
-- md5: 2b9df46d99580b90ea33e4cfd0078319.dir
-  size: 47259939650
-  nfiles: 36
+- md5: 844b48ffc52ced602e81f58082e8dcb6.dir
+  size: 9747816387
+  nfiles: 19
+  hash: md5
   path: stable-diffusion-v1-5
