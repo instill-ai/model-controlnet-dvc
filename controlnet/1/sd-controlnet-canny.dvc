@@ -1,6 +1,5 @@
 outs:
-- md5: e05530e2bf87e4bfdbef8d0b8ef0f5b1.dir
-  size: 1445158044
-  nfiles: 2
-  hash: md5
-  path: sd-controlnet-canny
+  - md5: e05530e2bf87e4bfdbef8d0b8ef0f5b1.dir
+    size: 1445158044
+    nfiles: 2
+    path: sd-controlnet-canny
