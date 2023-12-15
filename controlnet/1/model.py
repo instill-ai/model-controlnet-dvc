@@ -279,7 +279,7 @@ class TritonPythonModel:
 
                 to_tensor_transform = transforms.ToTensor()
                 tensor_image = to_tensor_transform(outpu_image)
-                batch_tensor_image = tensor_image.unsqueeze(0).to("cpu")
+                batch_tensor_image = tensor_image.unsqueeze(0).to("cpu").permute(0, 2, 3, 1)
                 torch.cuda.empty_cache()
 
                 print(f"image: type({type(batch_tensor_image)}):")
