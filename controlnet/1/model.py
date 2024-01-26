@@ -196,7 +196,7 @@ class ControlNet:
             high_threshold = task_image_to_image_input.extra_params["high_threshold"]
 
         t0 = time.time()
-
+        processed_image = np.array(task_image_to_image_input.prompt_image)
         processed_image = cv2.Canny(processed_image, low_threshold, high_threshold)
         processed_image = processed_image[:, :, None]
         processed_image = np.concatenate(
