@@ -69,6 +69,7 @@ class ControlNet:
         self.pipe = diffusers.StableDiffusionControlNetPipeline.from_pretrained(
             stable_diffution_path,
             controlnet=controlnet,
+            safety_checker=None,
             torch_dtype=torch.float16,
             use_safetensors=True,
         )
@@ -150,6 +151,7 @@ class ControlNet:
 
         print("print(task_image_to_image_input.prompt_image)")
         print(task_image_to_image_input.prompt_image)
+        print(task_image_to_image_input.prompt_image.shape)
         print("-------\n")
 
         print("print(task_image_to_image_input.prompt)")
@@ -211,32 +213,26 @@ class ControlNet:
         )
         canny_image = Image.fromarray(processed_image)
 
-        outpu_image = self.pipe(
+        print("canny_image")
+        print(canny_image)
+        # https://github.com/huggingface/diffusers/blob/ea9dc3fa90c70c7cd825ca2346a31153e08b5367/src/diffusers/pipelines/controlnet/pipeline_controlnet.py#L900
+        #  `(batch_size, height, width, num_channels)`
+        output_arr = self.pipe(
             task_image_to_image_input.prompt,
             image=canny_image,
+            # negative_prompt
+            height=canny_image.height,
+            width=canny_image.width,
             num_inference_steps=num_inference_steps,
-        ).images[0]
-
-        to_tensor_transform = transforms.ToTensor()
-        tensor_image = to_tensor_transform(outpu_image)
-        batch_tensor_image = tensor_image.unsqueeze(0).to("cpu").permute(0, 2, 3, 1)
-        torch.cuda.empty_cache()
-
-        print(f"Inference time cost {time.time()-t0}s")
-
-        print(f"image: type({type(batch_tensor_image)}):")
-        print(f"image: shape: {batch_tensor_image.shape}")
-
-        # task_output = StandardTaskIO.parse_task_text_generation_output(sequences)
-        # task_output = np.asarray(batch_tensor_image).tobytes()
-        task_output = batch_tensor_image.numpy().tobytes()
+            generator=torch.manual_seed(2),
+            output_type="np",
+        ).images
 
         print("Output:")
-        # print(task_output)
-        print("type(task_output): ", type(task_output))
-        response_shape = list(batch_tensor_image.numpy().shape)
-        print("batch_tensor_image.numpy().shape:", response_shape)
-        print("batch_tensor_image.shape: ", batch_tensor_image.shape)
+        output_arr_tansponse = output_arr
+        response_shape = list(output_arr_tansponse.shape)
+        task_output = output_arr_tansponse.tobytes()
+        print("output_arr.shape:", response_shape)
 
         return construct_infer_response(
             req=req,
