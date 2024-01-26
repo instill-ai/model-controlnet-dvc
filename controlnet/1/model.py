@@ -195,6 +195,12 @@ class ControlNet:
         if "high_threshold" in task_image_to_image_input.extra_params:
             high_threshold = task_image_to_image_input.extra_params["high_threshold"]
 
+        num_inference_steps = task_image_to_image_input.steps
+        if "num_inference_steps" in task_image_to_image_input.extra_params:
+            num_inference_steps = task_image_to_image_input.extra_params[
+                "um_inference_steps"
+            ]
+
         t0 = time.time()
         processed_image = cv2.Canny(
             task_image_to_image_input.prompt_image, low_threshold, high_threshold
@@ -208,7 +214,7 @@ class ControlNet:
         outpu_image = self.pipe(
             task_image_to_image_input.prompt,
             image=canny_image,
-            num_inference_steps=task_image_to_image_input.num_inference_steps,
+            num_inference_steps=num_inference_steps,
         ).images[0]
 
         to_tensor_transform = transforms.ToTensor()
