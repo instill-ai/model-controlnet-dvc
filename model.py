@@ -43,35 +43,33 @@ from instill.helpers import (
 
 @instill_deployment
 class ControlNet:
-    def __init__(self, model_path: str):
-        self.application_name = "_".join(model_path.split("/")[3:5])
-        self.deployement_name = model_path.split("/")[4]
-        print(f"application_name: {self.application_name}")
-        print(f"deployement_name: {self.deployement_name}")
+    def __init__(self):
         print(f"torch version: {torch.__version__}")
-
         print(f"torch.cuda.is_available() : {torch.cuda.is_available()}")
         print(f"torch.cuda.device_count() : {torch.cuda.device_count()}")
-        print(f"torch.cuda.current_device() : {torch.cuda.current_device()}")
-        print(f"torch.cuda.device(0) : {torch.cuda.device(0)}")
-        print(f"torch.cuda.get_device_name(0) : {torch.cuda.get_device_name(0)}")
+        # print(f"torch.cuda.current_device() : {torch.cuda.current_device()}")
+        # print(f"torch.cuda.device(0) : {torch.cuda.device(0)}")
+        # print(f"torch.cuda.get_device_name(0) : {torch.cuda.get_device_name(0)}")
 
-        if model_path[-1] != "/":
-            model_path = f"{model_path}/"
+        # https://huggingface.co/blog/controlnet
+        # Download through huggingface
 
-        controlnet_canny_path = f"{model_path}sd-controlnet-canny/"
-        stable_diffution_path = f"{model_path}stable-diffusion-v1-5/"
+        ACCESS_TOKEN = "..."
 
         controlnet = diffusers.ControlNetModel.from_pretrained(
-            controlnet_canny_path, torch_dtype=torch.float16, use_safetensors=True
+            "lllyasviel/sd-controlnet-canny",
+            torch_dtype=torch.float16,
+            use_safetensors=True,
+            token=ACCESS_TOKEN,
         )
 
         self.pipe = diffusers.StableDiffusionControlNetPipeline.from_pretrained(
-            stable_diffution_path,
+            "runwayml/stable-diffusion-v1-5",
             controlnet=controlnet,
             safety_checker=None,
             torch_dtype=torch.float16,
             use_safetensors=True,
+            token=ACCESS_TOKEN,
         )
 
         self.pipe.scheduler = diffusers.UniPCMultistepScheduler.from_config(
@@ -248,14 +246,11 @@ class ControlNet:
         )
 
 
-deployable = InstillDeployable(
-    ControlNet,
-    # There are two models in this directory,
-    # path would be construct inside initialize function
-    model_weight_or_folder_name="/",
-    use_gpu=True,
+entrypoint = (
+    # https://github.com/instill-ai/python-sdk/blob/main/samples/tinyllama-gpu/model.py
+    InstillDeployable(ControlNet)
+    .update_max_replicas(4)
+    .update_min_replicas(1)
+    .update_num_gpus(0.35)  # 15G/40G
+    .get_deployment_handle()
 )
-
-# # Optional
-# deployable.update_max_replicas(2)
-# deployable.update_min_replicas(0)
